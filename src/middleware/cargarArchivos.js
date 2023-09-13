@@ -15,11 +15,7 @@ const fileUploadMiddleware = multer({
     storage: saveLocation,
     dest: join(__dirname, "/../documents"),
     fileFilter: (req, file, cb) => {
-        if (file.originalname.match(/\.(mov|mp4|avi|mkv|)$/)) {
-            cb(null, true);
-          } else {
-            cb(new Error('Invalid file type. Only video files are allowed.'));
-          }
+            cb(null, true);   
     }
 }).single("file");
 
