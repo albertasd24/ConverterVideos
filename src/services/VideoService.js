@@ -1,9 +1,58 @@
-import { existsSync, unlinkSync } from "fs";
+import { existsSync, unlinkSync, writeFile } from "fs";
 import { join } from "path";
 import { __dirname } from "../helpers/urlhandle.js";
 import handbrake from 'handbrake-js';
 import { spawn } from "child_process";
 import { promisify } from "util";
+
+export const saveFile = (buffer, originalname, folderPath) => {
+    return new Promise((resolve, reject) => {
+        const filePath = join(folderPath, originalname);
+        writeFile(filePath, buffer, (error) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(filePath);
+            }
+        });
+    });
+}
+
+export const convertirVideoServicio = async (file, format) => {
+    const nameFile = file;
+    const inputFilePath = join(__dirname, `../documents/${file}`);
+    const outputFilePath = join(__dirname, `../documents/${nameFile.split('.').shift()}.${format}`);
+    const options = {
+        input: inputFilePath,
+        output: outputFilePath,
+    };
+    const spawnPromise = () => {
+        return new Promise((resolve, reject) => {
+            const hbProcess = handbrake.spawn(options)
+                .on('error', err => {
+                    console.error('Error:', err);
+                    reject(`Error: ${err}`);
+                })
+                .on('progress', progress => {
+                    console.log('Progreso:', progress.percentComplete);
+                })
+                .on('complete', () => {
+                    console.log('Conversión completada');
+                    resolve();
+                });
+        });
+    };
+    try {
+        await spawnPromise();
+        const response = { status: true, file: `${outputFilePath}` }
+        return response;
+    } catch (error) {
+        console.error('Error:', error);
+        const response = { status: false, error }
+        return response;
+    }
+}
+
 const removeVideoService = (file) => {
     const pathFile = join(__dirname, `/../documents/${file}`)
     if (existsSync(pathFile)) {
@@ -40,23 +89,10 @@ const convertVideoMp4 = async (file, res) => {
     try {
         await spawnPromise();
         removeVideoService(file)
-       return true;
+        return true;
     } catch (error) {
         console.error('Error:', error);
         return false;
     }
-    //  handbrake.spawn(options)
-    //     .on('error', err => {
-    //         console.error('Error:', err);
-    //         return `Error:${err}`;
-    //     })
-    //     .on('progress', progress => {
-    //         console.log('Progreso:', progress.percentComplete);
-    //     })
-    //     .on('complete', () => {
-    //         console.log('Conversión completada');
-    //         removeVideoService(file)
-    //         res.status(200).send({ message: "El video fue convertido exitosamente", file:`${nameFile}.mp4` })
-    //     });
 }
 export { convertVideoMp4, removeVideoService }
