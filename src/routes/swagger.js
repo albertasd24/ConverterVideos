@@ -8,6 +8,7 @@ const options = {
   },
   apis: [
     "src/routes/VideoRoutes.js",
+    "src/routes/ImagenRoutes.js",
   ],
 };
 

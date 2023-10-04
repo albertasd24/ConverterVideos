@@ -13,7 +13,7 @@ const converterVideo = async (req, res) => {
         const format = req.body.tipo;
         const filePath = await saveFile(archivo.buffer, newName, rutaArchivo);
         // res.send(filePath);
-        const formatVideo = ["mov","avi","avi","mkv","wmv","avchd","flv","f4v","webm","webp", "mp4"];
+        const formatVideo = ["mov","avi","avi","mkv","wmv","avchd","flv","f4v","webm", "mp4"];
         // const nameFile = req.file.filename;
         if (formatVideo.includes(newName.split('.').pop())) {
             console.log("controler");

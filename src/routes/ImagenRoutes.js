@@ -1,17 +1,16 @@
 import { Router } from "express";
-import { converterVideo } from "../controller/VideoController.js";
 import fileUploadMiddleware from "../middleware/cargarArchivos.js";
-import { validateFormartDocument } from "../middleware/validationFile.js";
+import { converterImage } from "../controller/ImagenController.js";
 const router = Router();
 
 /**
  * @openapi
- * /coverterVideo:
+ * /coverterImage:
  *   post:
  *     summary: Obtener todos los focos
  *     description: Obtiene todos lso focos de negocio registrados
  *     tags:
- *      - Video
+ *      - Imagen
  *     requestBody:
  *         content:
  *           multipart/form-data:
@@ -38,6 +37,6 @@ const router = Router();
  *                 
  *
  */
-router.post("/coverterImage",fileUploadMiddleware, converterVideo);
+router.post("/coverterImage",fileUploadMiddleware, converterImage);
 
 export default router;
